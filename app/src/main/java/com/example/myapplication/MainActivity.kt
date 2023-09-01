@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,16 @@ class Main: AppCompatActivity() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
+        adapter.setOnItemClickListener(object : GifsAdapter.OnItemClickListener{
+            override fun onItemClick(position: Int) {
+                val intent = Intent(this@Main, SecondActivity::class.java)
+
+                intent.putExtra("url", gifs[position].images.ogImage.url)
+                startActivity(intent)
+            }
+
+        })
+
         val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -39,6 +50,10 @@ class Main: AppCompatActivity() {
                 }
                 gifs.addAll(body!!.res)
                 adapter.notifyDataSetChanged()
+            }
+
+            override fun onFailure(call: Call<DataResult?>, t: Throwable) {
+                TODO("Not yet implemented")
             }
         })
     }
